@@ -38,7 +38,7 @@ def deliver(subject, body):
     """Send the message to you. Uses Resend's HTTPS API when RESEND_API_KEY is set
     (works on hosts that block SMTP, like Render's free plan), else Gmail SMTP."""
     to = os.environ.get("EMAIL_TO") or settings.EMAIL_HOST_USER
-    key = os.environ.get("re_dor8QqEr_3iMo9ST8hbWSjja1zheLskAG")
+    key = os.environ.get("RESEND_API_KEY")
     if key:
         payload = json.dumps({
             "from": "Portfolio <onboarding@resend.dev>",
@@ -115,7 +115,7 @@ def ask(request):
         q = str(json.loads(request.body).get("q", "")).strip()[:300]
     except ValueError:
         q = ""
-    key = os.environ.get("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")
+    key = os.environ.get("ANTHROPIC_API_KEY")
     if not q or not key:
         return JsonResponse({"ok": False, "error": "Assistant is not configured."}, status=503)
     payload = json.dumps({
