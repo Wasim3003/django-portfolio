@@ -1,10 +1,26 @@
-"""Single-file Django backend for the portfolio.
-Run:  pip install django gunicorn
-      set EMAIL_HOST_USER, EMAIL_HOST_PASSWORD (Gmail app password), EMAIL_TO
-      python app.py runserver --noreload      (local)
-      gunicorn app:application                (deploy)
+"""Backend for the Wasim Stark portfolio (Django, one file).
+
+Routes
+  /            the page (index.html)
+  /resume.pdf  your resume (download)
+  /theme.mp3   the music for the Music button
+  /contact/    contact form: emails you the message
+  /ask/        JARVIS chat: answers questions about you
+  /github/     live GitHub numbers for the feed
+  /health/     shows which settings are loaded (true/false only)
+
+Environment variables (set them on your host, never in the code)
+  RESEND_API_KEY     sends contact mail over HTTPS (works on Render free)
+  EMAIL_TO           where contact messages arrive
+  GROQ_API_KEY       free key for JARVIS (or use ANTHROPIC_API_KEY)
+  GITHUB_TOKEN       optional, avoids GitHub rate limits
+  SECRET_KEY, DEBUG  Django settings (DEBUG=0 on a live site)
+
+Run locally:  pip install -r requirements.txt
+              python app.py runserver --noreload
+Deploy:       gunicorn app:application
 """
-import json, os, sys, time, urllib.request
+import json, os, sys, time, urllib.error, urllib.request
 from pathlib import Path
 from django.conf import settings
 
@@ -28,6 +44,25 @@ from django.http import FileResponse, Http404, HttpResponse, JsonResponse
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+
+
+def send_file(name, content_type, download_name=None):
+    """Sends a file that sits next to app.py."""
+    path = BASE / name
+    if not path.exists():
+        raise Http404
+    response = FileResponse(open(path, "rb"), content_type=content_type)
+    if download_name:
+        response["Content-Disposition"] = 'attachment; filename="%s"' % download_name
+    return response
+
+
+def resume(request):
+    return send_file("resume.pdf", "application/pdf", "Wasimullah_Siddique_Resume.pdf")
+
+
+def theme(request):
+    return send_file("theme.mp3", "audio/mpeg")
 
 
 def index(request):
@@ -55,14 +90,6 @@ def deliver(subject, body):
         send_mail(subject, body, settings.EMAIL_HOST_USER, [to], fail_silently=False)
 
 
-def theme(request):
-    """Serves your own theme.mp3 if you put one next to this file."""
-    f = BASE / "theme.mp3"
-    if not f.exists():
-        raise Http404
-    return FileResponse(open(f, "rb"), content_type="audio/mpeg")
-
-
 @csrf_exempt
 @require_POST
 def contact(request):
@@ -87,15 +114,6 @@ def contact(request):
     return JsonResponse({"ok": True})
 
 
-def resume(request):
-    f = BASE / "resume.pdf"
-    if not f.exists():
-        raise Http404
-    resp = FileResponse(open(f, "rb"), content_type="application/pdf")
-    resp["Content-Disposition"] = 'attachment; filename="Wasimullah_Siddique_Resume.pdf"'
-    return resp
-
-
 FACTS = "You are JARVIS, the assistant on Wasim's portfolio. Answer only questions about Wasim, in under 80 words, in a friendly tone. If the answer is not in these facts, say you do not know and suggest emailing wasimroy272@gmail.com. Facts: Wasim is Mohammed Wasimullah Siddique, a Python full-stack developer from Visakhapatnam, India. B.Tech in Electronics and Communication Engineering, Andhra University, 2021 to 2025, merit scholarship (top 5% of 200 students). Skills: Python, JavaScript, C basics, Django, Django REST Framework, React, MySQL, PostgreSQL, Redis, Git, GitHub, REST APIs, caching, debugging. Experience: Python Full Stack Developer Intern at RoboWaves. Projects: GitHub Searcher (Django REST, Redis caching with 2 hour TTL, React), Country Information Platform (Django, external APIs, 3D globe), Jarvis Voice Assistant (Python, speech recognition), PrepMind AI (exam prep with the Claude API), ANTIGRAVITY (fitness tracker with AI coach), AI Chatbot (Django, React, LLaMA3 on Groq). Certifications: Python Full Stack (QSpiders), Telecom (BSNL), Embedded C, IoT, AI and Cloud (L&T). Contact: wasimroy272@gmail.com, GitHub wasim3003."
 _hits = {}
 _cache = {"t": 0, "data": None}
@@ -115,25 +133,55 @@ def ask(request):
         q = str(json.loads(request.body).get("q", "")).strip()[:300]
     except ValueError:
         q = ""
-    key = os.environ.get("ANTHROPIC_API_KEY")
-    if not q or not key:
+    groq = os.environ.get("GROQ_API_KEY")
+    akey = os.environ.get("ANTHROPIC_API_KEY")
+    if not q or not (groq or akey):
         return JsonResponse({"ok": False, "error": "Assistant is not configured."}, status=503)
-    payload = json.dumps({
-        "model": os.environ.get("ASK_MODEL", "claude-haiku-5-5"),
-        "max_tokens": 300,
-        "system": FACTS,
-        "messages": [{"role": "user", "content": q}],
-    }).encode()
-    req = urllib.request.Request(
-        "https://api.anthropic.com/v1/messages", payload,
-        {"content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01"},
-    )
+    if groq:  # Groq has a free plan, so this is the no-cost option
+        url = "https://api.groq.com/openai/v1/chat/completions"
+        headers = {"Authorization": "Bearer " + groq, "Content-Type": "application/json", "User-Agent": "portfolio"}
+        body = {
+            "model": os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile"),
+            "max_tokens": 400,
+            "messages": [{"role": "system", "content": FACTS}, {"role": "user", "content": q}],
+        }
+    else:
+        url = "https://api.anthropic.com/v1/messages"
+        headers = {"x-api-key": akey, "anthropic-version": "2023-06-01", "content-type": "application/json"}
+        body = {
+            "model": os.environ.get("ASK_MODEL", "claude-haiku-5-5"),
+            "max_tokens": 1500,
+            "system": FACTS,
+            "messages": [{"role": "user", "content": q}],
+        }
     try:
-        with urllib.request.urlopen(req, timeout=20) as r:
-            text = json.loads(r.read())["content"][0]["text"]
-    except Exception:
+        req = urllib.request.Request(url, json.dumps(body).encode(), headers)
+        with urllib.request.urlopen(req, timeout=30) as r:
+            data = json.loads(r.read())
+        if groq:
+            text = data["choices"][0]["message"]["content"].strip()
+        else:
+            text = "".join(b.get("text", "") for b in data.get("content", []) if b.get("type") == "text").strip()
+        if not text:
+            raise ValueError("empty answer")
+    except urllib.error.HTTPError as e:
+        print("ASK ERROR", e.code, e.read()[:400], file=sys.stderr, flush=True)
+        return JsonResponse({"ok": False, "error": "Could not answer right now."}, status=502)
+    except Exception as e:
+        print("ASK ERROR", repr(e), file=sys.stderr, flush=True)
         return JsonResponse({"ok": False, "error": "Could not answer right now."}, status=502)
     return JsonResponse({"ok": True, "text": text})
+
+
+def health(request):
+    """Shows which settings are loaded (true/false only, never the values)."""
+    return JsonResponse({
+        "groq_key_set": bool(os.environ.get("GROQ_API_KEY")),
+        "anthropic_key_set": bool(os.environ.get("ANTHROPIC_API_KEY")),
+        "resend_key_set": bool(os.environ.get("RESEND_API_KEY")),
+        "github_token_set": bool(os.environ.get("GITHUB_TOKEN")),
+        "email_to": os.environ.get("EMAIL_TO", ""),
+    })
 
 
 def github(request):
@@ -170,10 +218,11 @@ def github(request):
 urlpatterns = [
     path("", index),
     path("contact/", contact),
-    path("theme.mp3", theme),
     path("resume.pdf", resume),
+    path("theme.mp3", theme),
     path("ask/", ask),
     path("github/", github),
+    path("health/", health),
 ]
 
 from django.core.wsgi import get_wsgi_application
