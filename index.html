@@ -1,0 +1,2677 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Wasim Stark | Engineer. Developer. Innovator.</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,500;0,700;1,700&family=Barlow:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /*
+  Wasim Stark portfolio styles.
+
+  Rules are grouped by section, but later rules sometimes override earlier
+  ones on purpose (for example the header). If you reorder rules, check the
+  page afterwards. All screen-size rules are collected near the bottom.
+*/
+
+      /* ===== Design tokens (colors) and page basics ===== */
+      :root {
+        --bg: #101217;
+        --panel: #171a21;
+        --line: #2c313c;
+        --text: #e8eaee;
+        --mute: #9aa3b2;
+        --red: #c4282d;
+        --gold: #f0b73a;
+        --arc: #6be6ff;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      :root:not([data-theme="light"]) {
+        color-scheme: dark;
+      }
+      @media (prefers-color-scheme: light) {
+        :root:not([data-theme="dark"]) {
+          --bg: #f1eee8;
+          --panel: #fff;
+          --line: #d6d0c4;
+          --text: #1b1d22;
+          --mute: #5b6270;
+          --red: #a81f24;
+          --gold: #9a6a00;
+          --arc: #0a7a94;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #101217;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 70px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font:
+          500 18px/1.6 Barlow,
+          system-ui,
+          sans-serif;
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: "Chakra Petch", sans-serif;
+        font-style: italic;
+        font-weight: 700;
+        margin: 0;
+      }
+      a {
+        color: inherit;
+      }
+      :focus-visible {
+        outline: 2px solid var(--arc);
+        outline-offset: 3px;
+      }
+      /* ===== Header: first version (superseded below, kept for cascade order) ===== */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        display: flex;
+        gap: 22px;
+        align-items: center;
+        padding: 14px 24px;
+        background: color-mix(in srgb, var(--bg) 88%, transparent);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--line);
+      }
+      nav b {
+        font-family: "Chakra Petch";
+        color: var(--gold);
+        margin-right: auto;
+      }
+      nav a {
+        text-decoration: none;
+        color: var(--mute);
+      }
+      nav a:hover {
+        color: var(--arc);
+      }
+      section {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 84px 24px;
+      }
+      /* ===== Hero (top section) ===== */
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 40px;
+        align-items: center;
+        min-height: 86vh;
+      }
+      .hero h1 {
+        font-size: clamp(2rem, 5.4vw, 3.6rem);
+        line-height: 1.1;
+        font-weight: 800;
+      }
+      .hero h1 span {
+        display: block;
+        color: var(--red);
+      }
+      .hero p {
+        max-width: 46ch;
+        color: var(--mute);
+        font-size: 1.15rem;
+      }
+      .status {
+        font-family: "Chakra Petch";
+        font-size: 0.8rem;
+        color: var(--arc);
+        min-height: 1.2em;
+        margin-bottom: 14px;
+      }
+      .btns {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 26px;
+      }
+      .btn {
+        padding: 11px 22px;
+        border: 1.5px solid var(--gold);
+        color: var(--gold);
+        text-decoration: none;
+        font-weight: 600;
+        background: none;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        clip-path: polygon(
+          10px 0,
+          100% 0,
+          100% calc(100% - 10px),
+          calc(100% - 10px) 100%,
+          0 100%,
+          0 10px
+        );
+      }
+      .btn.solid {
+        background: var(--red);
+        border-color: var(--red);
+        color: #fff;
+      }
+      .btn:hover {
+        background: var(--gold);
+        color: #101217;
+        border-color: var(--gold);
+      }
+      .reactor {
+        aspect-ratio: 1;
+        width: 100%;
+        max-width: 380px;
+        margin: auto;
+        cursor: pointer;
+        transition: filter 0.4s;
+      }
+      body.off .reactor {
+        filter: none;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      /* ===== Shared pieces: headings, cards, tags, skill rows ===== */
+      h2 {
+        font-size: 1.6rem;
+        margin-bottom: 8px;
+      }
+      .sub {
+        color: var(--mute);
+        margin: 0 0 34px;
+        max-width: 60ch;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+        gap: 18px;
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-left: 3px solid var(--gold);
+        padding: 20px 22px;
+      }
+      .card h3 {
+        font-size: 1.02rem;
+        margin-bottom: 6px;
+      }
+      .card p {
+        margin: 0 0 12px;
+        color: var(--mute);
+      }
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .tags i {
+        font-style: normal;
+        font-size: 0.85rem;
+        padding: 2px 10px;
+        border: 1px solid var(--line);
+        color: var(--arc);
+      }
+      .bars {
+        display: grid;
+        gap: 16px;
+      }
+      .proj .card {
+        border-left-color: var(--red);
+      }
+      .links {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-top: 22px;
+      }
+      /* ===== Timeline ===== */
+      .tl {
+        position: relative;
+        margin: 0;
+        padding: 0 0 0 34px;
+        list-style: none;
+      }
+      .tl:before {
+        content: "";
+        position: absolute;
+        left: 8px;
+        top: 6px;
+        bottom: 6px;
+        width: 2px;
+        background: linear-gradient(var(--red), var(--gold), var(--line));
+      }
+      .tl > li {
+        position: relative;
+        margin: 0 0 20px;
+        padding: 18px 22px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-left: 3px solid var(--gold);
+        transition:
+          background 0.3s,
+          box-shadow 0.3s,
+          border-color 0.3s,
+          transform 0.3s;
+        cursor: default;
+      }
+      .tl > li:before {
+        content: "";
+        position: absolute;
+        left: -34px;
+        top: 24px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--bg);
+        border: 3px solid var(--gold);
+        transition:
+          background 0.3s,
+          box-shadow 0.3s,
+          border-color 0.3s;
+      }
+      .tl > li:hover,
+      .tl > li:focus-visible {
+        background: color-mix(in srgb, var(--red) 30%, var(--panel));
+        border-color: var(--red);
+        box-shadow: 0 0 30px 2px color-mix(in srgb, var(--red) 65%, transparent);
+        transform: translateX(6px);
+      }
+      .tl > li:hover:before,
+      .tl > li:focus-visible:before {
+        background: var(--red);
+        border-color: var(--red);
+        box-shadow: 0 0 14px 3px var(--red);
+      }
+      .tl .when {
+        font-family: "Chakra Petch";
+        font-size: 0.78rem;
+        color: var(--arc);
+      }
+      .tl h3 {
+        font-size: 1.05rem;
+        margin: 4px 0 2px;
+      }
+      .tl .org {
+        color: var(--gold);
+        margin: 0 0 6px;
+        font-weight: 600;
+      }
+      .tl ul {
+        margin: 6px 0 0;
+        padding-left: 20px;
+        color: var(--mute);
+      }
+      .tl > li:hover ul,
+      .tl > li:focus-visible ul {
+        color: var(--text);
+      }
+      .btn,
+nav a,
+nav b,
+.tags i,
+h2,
+.bar,
+/* ===== Hover effects ===== */
+.card {
+        transition:
+          background 0.25s,
+          color 0.25s,
+          border-color 0.25s,
+          box-shadow 0.25s,
+          transform 0.25s,
+          padding 0.25s;
+      }
+      nav a:hover {
+        color: var(--arc);
+        text-decoration: underline;
+        text-underline-offset: 6px;
+      }
+      nav b:hover {
+        color: var(--red);
+      }
+      .btn:hover {
+        background: var(--red);
+        border-color: var(--red);
+        color: #fff;
+        transform: translateY(-2px);
+      }
+      .card:hover {
+        background: color-mix(in srgb, var(--red) 30%, var(--panel));
+        border-color: var(--red);
+        box-shadow: 0 0 30px 2px color-mix(in srgb, var(--red) 65%, transparent);
+        transform: translateY(-4px);
+      }
+      .card:hover p {
+        color: var(--text);
+      }
+      .tags i:hover {
+        color: #fff;
+        background: var(--red);
+        border-color: var(--red);
+      }
+      h2:hover {
+        color: var(--red);
+      }
+      .hero h1:hover span {
+        color: var(--gold);
+      }
+      .reactor:hover {
+        filter: drop-shadow(0 0 46px var(--arc));
+      }
+      .bars {
+        gap: 8px;
+      }
+      .bar {
+        padding: 9px 14px;
+        border-left: 3px solid var(--line);
+      }
+      .bar:hover {
+        background: color-mix(in srgb, var(--red) 30%, var(--bg));
+        border-left-color: var(--red);
+        box-shadow: 0 0 22px color-mix(in srgb, var(--red) 55%, transparent);
+        padding-left: 22px;
+      }
+      .proj .card:first-child {
+        grid-column: 1/-1;
+      }
+      .proj .card:first-child h3 {
+        font-size: 1.3rem;
+      }
+      .reactor canvas {
+        display: block;
+        width: 100% !important;
+        height: 100% !important;
+      }
+      /* ===== Contact form ===== */
+      .form {
+        max-width: 560px;
+        margin-top: 34px;
+        display: grid;
+        gap: 14px;
+      }
+      .form label {
+        display: grid;
+        gap: 4px;
+        color: var(--mute);
+        font-weight: 600;
+      }
+      .form input,
+      .form textarea {
+        font: inherit;
+        color: var(--text);
+        background: var(--bg);
+        border: 1px solid var(--line);
+        padding: 10px 12px;
+        transition:
+          border-color 0.25s,
+          box-shadow 0.25s;
+      }
+      .form input:hover,
+      .form textarea:hover {
+        border-color: var(--red);
+      }
+      .form input:focus,
+      .form textarea:focus {
+        outline: none;
+        border-color: var(--arc);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--arc) 30%, transparent);
+      }
+      .form textarea {
+        min-height: 110px;
+        resize: vertical;
+      }
+      .hp {
+        position: absolute;
+        left: -9999px;
+      }
+      #fs {
+        min-height: 1.4em;
+        margin: 0;
+        color: var(--gold);
+      }
+      /* ===== Header: logo, music button, GitHub and Resume buttons ===== */
+      nav.top {
+        justify-content: space-between;
+        gap: 18px;
+        padding: 12px 32px;
+        background:
+          radial-gradient(
+            circle at 4% 50%,
+            color-mix(in srgb, var(--red) 30%, transparent),
+            transparent 30%
+          ),
+          color-mix(in srgb, var(--bg) 92%, transparent);
+      }
+      nav .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        color: inherit;
+        text-decoration: none;
+      }
+      nav .brand:hover {
+        text-decoration: none;
+      }
+      .orb {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          #fff 0 12%,
+          var(--arc) 14% 34%,
+          #0b1c22 36% 54%,
+          var(--gold) 56% 66%,
+          var(--red) 68%
+        );
+        box-shadow: 0 0 22px color-mix(in srgb, var(--red) 70%, transparent);
+        transition:
+          box-shadow 0.3s,
+          transform 0.4s;
+      }
+      .brand:hover .orb {
+        box-shadow: 0 0 30px var(--arc);
+        transform: rotate(90deg);
+      }
+      .logo {
+        font-family: "Chakra Petch", sans-serif;
+        font-style: italic;
+        font-weight: 700;
+        font-size: 1.55rem;
+        background: linear-gradient(90deg, #ff5a5f, var(--gold));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .mid {
+        display: flex;
+        gap: 30px;
+      }
+      .mid a {
+        font-weight: 600;
+      }
+      nav .mid a.hot {
+        color: var(--gold);
+      }
+      .right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .pill {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 7px 16px;
+        background: var(--panel);
+        color: var(--mute);
+        font: inherit;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition:
+          border-color 0.25s,
+          box-shadow 0.25s,
+          color 0.25s;
+      }
+      .pill:hover {
+        border-color: var(--red);
+        box-shadow: 0 0 18px color-mix(in srgb, var(--red) 55%, transparent);
+        color: var(--text);
+      }
+      .pill.on {
+        color: var(--gold);
+        border-color: var(--gold);
+      }
+      nav a.gh {
+        display: inline-block;
+        background: var(--red);
+        color: #fff;
+        font-family: "Chakra Petch", sans-serif;
+        font-style: italic;
+        font-weight: 700;
+        padding: 11px 26px;
+        transform: skewX(-10deg);
+        box-shadow: 0 0 22px color-mix(in srgb, var(--red) 55%, transparent);
+      }
+      nav a.gh span {
+        display: inline-block;
+        transform: skewX(10deg);
+      }
+      nav a.gh:hover {
+        color: #fff;
+        text-decoration: none;
+        background: #e0343a;
+        box-shadow: 0 0 36px var(--red);
+        transform: skewX(-10deg) translateY(-2px);
+      }
+
+      section.hero {
+        max-width: none;
+        overflow: hidden;
+        min-height: calc(100vh - 70px);
+        padding: 0 0 0 max(24px, calc((100vw - 1040px) / 2));
+        grid-template-columns: minmax(0, 520px) 1fr;
+      }
+      section.hero > div:first-child {
+        position: relative;
+        z-index: 1;
+      }
+      section.hero .reactor {
+        width: min(92vh, 56vw);
+        max-width: none;
+        justify-self: end;
+        margin: 0 3vw 0 0;
+      }
+
+      nav a.rs svg {
+        margin-right: 7px;
+        vertical-align: -2px;
+      }
+      nav a.rs:hover {
+        color: #101217;
+        background: var(--gold);
+        box-shadow: 0 0 38px var(--gold);
+        transform: skewX(-10deg) scale(1.07);
+      }
+      nav a.rs:hover svg {
+        animation: dl 0.6s ease infinite;
+      }
+      @keyframes dl {
+        50% {
+          transform: translateY(3px);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        nav a.rs:hover svg {
+          animation: none;
+        }
+      }
+      nav a.gh {
+        padding: 11px 26px;
+        font-size: inherit;
+      }
+      nav.top {
+        flex-wrap: wrap;
+      }
+
+      .about {
+        max-width: 760px;
+      }
+      .about p {
+        margin: 0 0 12px;
+        color: var(--text);
+      }
+      /* ===== Arcade game ===== */
+      .gbar {
+        display: flex;
+        gap: 22px;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 10px 16px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-left: 3px solid var(--red);
+        font-family: "Chakra Petch", sans-serif;
+      }
+      .gbar span {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+      }
+      .gbar b {
+        color: var(--gold);
+      }
+      .gbar .btn {
+        margin-left: auto;
+      }
+      #gc {
+        display: block;
+        width: 100%;
+        height: auto;
+        border: 1px solid var(--line);
+        border-top: 0;
+        border-left: 3px solid var(--red);
+        cursor: crosshair;
+        touch-action: manipulation;
+        transition: box-shadow 0.3s;
+      }
+      #gc:hover {
+        box-shadow: 0 0 30px color-mix(in srgb, var(--red) 60%, transparent);
+      }
+
+      section.hero h1 {
+        text-transform: uppercase;
+        font-size: clamp(2.8rem, 7.5vw, 5.2rem);
+        line-height: 1;
+      }
+      .hero p.tag {
+        font-family: "Chakra Petch", sans-serif;
+        font-style: italic;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--gold);
+        font-size: clamp(0.95rem, 2.2vw, 1.25rem);
+        margin: 16px 0 10px;
+        max-width: none;
+      }
+      footer:hover {
+        color: var(--text);
+      }
+      footer {
+        text-align: center;
+        color: var(--mute);
+        padding: 30px 24px 50px;
+        border-top: 1px solid var(--line);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+      }
+      .hid {
+        position: absolute;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+      }
+      @keyframes bob {
+        50% {
+          transform: translateY(-12px) rotate(-2deg);
+        }
+      }
+      /* ===== About section and concept sketch ===== */
+      .aboutwrap {
+        display: grid;
+        grid-template-columns: 1.25fr 0.75fr;
+        gap: 24px;
+        align-items: stretch;
+      }
+      .aboutwrap .about {
+        max-width: none;
+      }
+      .sketch {
+        display: grid;
+        place-items: center;
+        gap: 8px;
+        text-align: center;
+        background:
+          linear-gradient(rgba(107, 230, 255, 0.07) 1px, transparent 1px) 0 0/22px 22px,
+          linear-gradient(90deg, rgba(107, 230, 255, 0.07) 1px, transparent 1px) 0 0/22px 22px,
+          var(--panel);
+      }
+      .sketch svg {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        animation: bob 3s ease-in-out infinite;
+      }
+      .sketch span {
+        font-family: "Chakra Petch", sans-serif;
+        color: var(--arc);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+      }
+      /* ===== Contact section and radar ===== */
+      #contact {
+        position: relative;
+      }
+      .cwrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 40px;
+      }
+      .cwrap .form {
+        flex: 0 1 560px;
+        margin-top: 34px;
+      }
+      .radar {
+        flex: 0 0 auto;
+        width: min(440px, 40vw);
+        opacity: 0.9;
+        pointer-events: none;
+        margin-top: 34px;
+      }
+      .radar .sweep {
+        transform-origin: 100px 100px;
+        animation: spin 5s linear infinite;
+      }
+      .blip {
+        animation: blip 2s ease-in-out infinite;
+      }
+      @keyframes blip {
+        50% {
+          opacity: 0.15;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .radar .sweep,
+        .blip,
+        .sketch svg {
+          animation: none;
+        }
+      }
+      /* ===== Project case studies ===== */
+      .hero p.real {
+        margin: 0 0 8px;
+        font-size: 1rem;
+        max-width: none;
+      }
+      .proj details {
+        margin-top: 12px;
+        border-top: 1px solid var(--line);
+        padding-top: 10px;
+      }
+      .proj summary {
+        cursor: pointer;
+        color: var(--gold);
+        font-weight: 600;
+      }
+      .proj dt {
+        margin-top: 8px;
+        color: var(--arc);
+        font-family: "Chakra Petch", sans-serif;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+      .proj dd {
+        margin: 2px 0 0;
+        color: var(--mute);
+      }
+      a.cs {
+        display: inline-block;
+        margin-top: 10px;
+        color: var(--gold);
+      }
+      a.cs:hover {
+        color: var(--arc);
+      }
+      /* ===== Scroll power bar and section reveal ===== */
+      #pwrbar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        right: 0;
+        height: 3px;
+        z-index: 7;
+        pointer-events: none;
+      }
+      #pwrbar i {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, var(--red), var(--gold), var(--arc));
+        box-shadow: 0 0 12px var(--arc);
+      }
+      #pct {
+        position: fixed;
+        left: 14px;
+        bottom: 14px;
+        z-index: 6;
+        font:
+          700 0.72rem "Chakra Petch",
+          sans-serif;
+        letter-spacing: 0.14em;
+        color: var(--arc);
+        pointer-events: none;
+      }
+      .js .rv {
+        opacity: 0;
+        transform: translateY(28px);
+      }
+      .js .rv.on {
+        opacity: 1;
+        transform: none;
+        transition:
+          opacity 0.7s,
+          transform 0.7s;
+      }
+      section.on h2:after {
+        content: "ONLINE";
+        margin-left: 14px;
+        padding: 2px 8px;
+        border: 1px solid var(--arc);
+        color: var(--arc);
+        font-size: 0.45em;
+        letter-spacing: 0.2em;
+        vertical-align: middle;
+      }
+      /* ===== JARVIS chat ===== */
+      #jb {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        z-index: 8;
+        border: 1.5px solid var(--arc);
+        background: var(--panel);
+        color: var(--arc);
+        padding: 10px 18px;
+        border-radius: 999px;
+        font:
+          600 1rem "Chakra Petch",
+          sans-serif;
+        cursor: pointer;
+        transition:
+          background 0.25s,
+          color 0.25s,
+          border-color 0.25s,
+          box-shadow 0.25s;
+      }
+      #jb:hover {
+        background: var(--red);
+        border-color: var(--red);
+        color: #fff;
+        box-shadow: 0 0 24px color-mix(in srgb, var(--red) 60%, transparent);
+      }
+      #jp {
+        position: fixed;
+        right: 18px;
+        bottom: 70px;
+        z-index: 8;
+        width: min(360px, calc(100vw - 36px));
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-top: 3px solid var(--red);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      }
+      #jp[hidden] {
+        display: none;
+      }
+      .jh {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 14px;
+        font:
+          700 1rem "Chakra Petch",
+          sans-serif;
+        color: var(--gold);
+      }
+      .jh button {
+        background: none;
+        border: 0;
+        color: var(--mute);
+        font-size: 1.4rem;
+        cursor: pointer;
+      }
+      .jh button:hover {
+        color: var(--red);
+      }
+      #jm {
+        max-height: 300px;
+        overflow: auto;
+        padding: 0 14px;
+        display: grid;
+        gap: 8px;
+      }
+      #jm p {
+        margin: 0;
+        padding: 8px 12px;
+        font-size: 0.95rem;
+      }
+      #jm .bot {
+        background: var(--bg);
+        border-left: 3px solid var(--arc);
+      }
+      #jm .me {
+        background: color-mix(in srgb, var(--red) 25%, var(--bg));
+        justify-self: end;
+      }
+      #jf {
+        display: flex;
+        gap: 8px;
+        padding: 12px 14px;
+      }
+      #ji {
+        flex: 1;
+        min-width: 0;
+        font: inherit;
+        color: var(--text);
+        background: var(--bg);
+        border: 1px solid var(--line);
+        padding: 8px 10px;
+      }
+      #ji:focus {
+        outline: none;
+        border-color: var(--arc);
+      }
+      #jf .btn {
+        padding: 8px 16px;
+      }
+      body.rec #battle,
+body.rec .reactor,
+body.rec #game,
+body.rec .radar,
+body.rec .sketch,
+body.rec #pwrbar,
+body.rec #pct,
+body.rec #mus,
+/* ===== Recruiter view (turns effects off) ===== */
+body.rec .mid a[href="#game"] {
+        display: none !important;
+      }
+      body.rec * {
+        animation: none !important;
+      }
+      body.rec .rv {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+      body.rec section.hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding: 70px max(24px, calc((100vw - 1040px) / 2));
+      }
+      body.rec .aboutwrap {
+        grid-template-columns: 1fr;
+      }
+      body.rec .cwrap {
+        display: block;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .js .rv {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      /* ===== Jet fight layer ===== */
+      #battle {
+        position: fixed;
+        inset: 0;
+        z-index: 4;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      #battle svg {
+        filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45));
+      }
+      /* responsive: one place for all breakpoints */
+      /* ===== Responsive rules (screen sizes) ===== */
+      @media (max-width: 1100px) {
+        nav.top {
+          padding: 12px 20px;
+        }
+        .mid {
+          gap: 18px;
+        }
+        .mid a {
+          font-size: 0.95rem;
+        }
+        .logo {
+          font-size: 1.3rem;
+        }
+      }
+      @media (max-width: 900px) {
+        .mid {
+          display: none;
+        }
+        .radar {
+          display: none;
+        }
+      }
+      @media (max-width: 760px) {
+        section {
+          padding: 60px 20px;
+        }
+        section.hero {
+          grid-template-columns: 1fr;
+          padding: 40px 20px 0;
+          min-height: auto;
+        }
+        section.hero .reactor {
+          width: min(100%, 460px);
+          justify-self: center;
+          margin: 0 auto;
+        }
+        nav.top {
+          padding: 10px 14px;
+        }
+        .logo {
+          font-size: 1.1rem;
+        }
+        .orb {
+          width: 34px;
+          height: 34px;
+        }
+        .gbar {
+          gap: 14px;
+        }
+        #pct {
+          display: none;
+        }
+        .aboutwrap {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 560px) {
+        .right {
+          gap: 8px;
+          flex-wrap: wrap;
+          justify-content: flex-end;
+        }
+        .pill span {
+          display: none;
+        }
+        .pill {
+          padding: 8px 11px;
+        }
+        .btns .btn {
+          flex: 1 1 auto;
+          text-align: center;
+        }
+      }
+      .mname,
+      .burger {
+        display: none;
+      }
+      @media (max-width: 900px) {
+        nav.top {
+          gap: 12px;
+        }
+        nav.top .brand {
+          margin-right: auto;
+        }
+        nav.top .mname {
+          display: none;
+          order: 2;
+          margin-left: auto;
+          font:
+            italic 700 1.15rem "Chakra Petch",
+            sans-serif;
+          background: linear-gradient(90deg, #ff5a5f, var(--gold));
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          text-decoration: none;
+        }
+        nav.top .burger {
+          display: block;
+          order: 3;
+          margin-left: auto;
+          width: 44px;
+          height: 44px;
+          position: relative;
+          border: 1px solid var(--line);
+          border-radius: 10px;
+          background: var(--panel);
+          cursor: pointer;
+          transition:
+            border-color 0.25s,
+            box-shadow 0.25s;
+        }
+        .burger:hover {
+          border-color: var(--red);
+          box-shadow: 0 0 18px color-mix(in srgb, var(--red) 55%, transparent);
+        }
+        .burger span,
+        .burger span:before,
+        .burger span:after {
+          position: absolute;
+          width: 20px;
+          height: 2px;
+          background: var(--text);
+          content: "";
+          transition:
+            transform 0.25s,
+            background 0.25s,
+            top 0.25s;
+        }
+        .burger span {
+          left: 11px;
+          top: 20px;
+        }
+        .burger span:before {
+          left: 0;
+          top: -7px;
+        }
+        .burger span:after {
+          left: 0;
+          top: 7px;
+        }
+        .burger:hover span,
+        .burger:hover span:before,
+        .burger:hover span:after {
+          background: var(--red);
+        }
+        nav.top.open .burger span {
+          background: transparent;
+        }
+        nav.top.open .burger span:before {
+          top: 0;
+          transform: rotate(45deg);
+          background: var(--red);
+        }
+        nav.top.open .burger span:after {
+          top: 0;
+          transform: rotate(-45deg);
+          background: var(--red);
+        }
+        nav.top .mid,
+        nav.top .right {
+          display: none;
+        }
+        nav.top.open {
+          max-height: 100vh;
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
+        nav.top.open .mid {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+          order: 4;
+          width: 100%;
+          margin-top: 8px;
+        }
+        nav.top.open .mid a {
+          padding: 13px 8px;
+          font-size: 1.15rem;
+          border-bottom: 1px solid var(--line);
+        }
+        nav.top.open .mid a:hover {
+          background: color-mix(in srgb, var(--red) 30%, transparent);
+          padding-left: 16px;
+          color: var(--text);
+          text-decoration: none;
+        }
+        nav.top.open .right {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 12px;
+          order: 5;
+          width: 100%;
+          margin-top: 12px;
+          padding: 0 12px 4px 0;
+        }
+        nav.top.open .pill {
+          justify-content: center;
+          padding: 11px 16px;
+        }
+        nav.top.open .pill span {
+          display: inline;
+        }
+        nav.top.open a.gh {
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Hidden SVG sprites: gradients, the flier and the jet, reused with <use> -->
+    <svg class="hid" aria-hidden="true">
+      <defs>
+        <linearGradient id="rg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#e0343a" />
+          <stop offset="1" stop-color="#8f1519" />
+        </linearGradient>
+        <linearGradient id="gg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffd76a" />
+          <stop offset="1" stop-color="#c58a14" />
+        </linearGradient>
+        <symbol id="flyer" viewBox="0 0 200 100">
+          <path d="M38 52Q6 44 0 52Q6 60 38 56Z" fill="#6be6ff" opacity=".9" />
+          <path d="M38 53Q16 49 12 52Q16 55 38 55Z" fill="#fff" />
+          <path d="M132 40Q100 24 70 34Q96 32 126 46Z" fill="#e0343a" opacity=".85" />
+          <path d="M40 50L82 46L82 58L40 57Z" fill="url(#rg)" />
+          <rect x="34" y="49" width="10" height="9" rx="3" fill="url(#gg)" />
+          <path d="M78 42Q110 36 134 44L134 60Q108 66 78 58Z" fill="url(#rg)" />
+          <circle cx="112" cy="52" r="7" fill="#0b1c22" stroke="url(#gg)" stroke-width="2.5" />
+          <circle cx="112" cy="52" r="3.4" fill="#6be6ff" />
+          <path d="M122 46L172 38L174 45L124 54Z" fill="url(#gg)" />
+          <circle cx="176" cy="41" r="6" fill="url(#rg)" />
+          <circle cx="146" cy="44" r="15" fill="url(#gg)" />
+          <path d="M148 38Q162 40 160 48Q152 52 144 48Z" fill="#0b1c22" />
+          <circle cx="154" cy="43" r="3" fill="#6be6ff" />
+        </symbol>
+        <symbol id="jet" viewBox="0 0 120 50">
+          <path
+            d="M0 25L28 21L52 4L68 4L58 21L104 18L120 8V14L108 25L120 36V42L104 32L58 29L68 46L52 46L28 29Z"
+            fill="#6c7482"
+          />
+          <path d="M0 25L28 21L40 25L28 29Z" fill="#3b414c" />
+          <ellipse cx="32" cy="25" rx="9" ry="3.2" fill="#6be6ff" />
+          <circle cx="116" cy="25" r="3.5" fill="#ffb347" />
+        </symbol>
+      </defs>
+    </svg>
+    <div id="pwrbar" aria-hidden="true"><i></i></div>
+    <b id="pct" aria-hidden="true">SUIT POWER 0%</b>
+    <button id="jb" type="button" aria-expanded="false">Ask JARVIS</button>
+    <div id="jp" hidden>
+      <div class="jh">
+        <span>JARVIS</span><button id="jx" type="button" aria-label="Close chat">&times;</button>
+      </div>
+      <div id="jm" aria-live="polite">
+        <p class="bot">Hello. Ask me anything about Wasim's skills, projects or experience.</p>
+      </div>
+      <form id="jf">
+        <input
+          id="ji"
+          maxlength="300"
+          placeholder="What has Wasim built with Django?"
+          autocomplete="off"
+          aria-label="Your question"
+        /><button class="btn solid" type="submit">Send</button>
+      </form>
+    </div>
+    <div id="battle" aria-hidden="true"></div>
+    <!-- Header and navigation (becomes a burger menu on small screens) -->
+    <nav class="top">
+      <a class="brand" href="#top"
+        ><span class="orb"></span><span class="logo">WASIM STARK</span></a
+      >
+      <div class="mid">
+        <a href="#about">About</a><a href="#timeline">Timeline</a><a href="#systems">Systems</a
+        ><a class="hot" href="#projects">Projects</a><a href="#game">Game</a
+        ><a href="#contact">Contact</a>
+      </div>
+      <div class="right">
+        <button class="pill" id="rec" type="button" aria-pressed="false">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M6 2h9l5 5v15H6zM14 3.5V8h4.5zM8 12h8v1.5H8zm0 3h8v1.5H8z" /></svg
+          ><span>Recruiter view</span></button
+        ><button class="pill" id="mus" type="button" aria-pressed="false">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path
+              d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"
+            /></svg
+          ><span>Music: off</span></button
+        ><a class="gh" href="https://github.com/wasim3003"><span>GitHub</span></a
+        ><a class="gh rs" id="rs" href="resume.pdf" download="Wasimullah_Siddique_Resume.pdf"
+          ><span
+            ><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 3v10.6l3.6-3.6L17 11.4l-5 5-5-5L8.4 10l3.6 3.6V3zM5 18h14v2H5z" /></svg
+            >Resume</span
+          ></a
+        >
+      </div>
+      <a class="mname" href="#top">WASIM STARK</a
+      ><button
+        class="burger"
+        id="burger"
+        type="button"
+        aria-expanded="false"
+        aria-label="Open menu"
+      >
+        <span></span>
+      </button>
+    </nav>
+
+    <section class="hero" id="top">
+      <div>
+        <div class="status" id="status" aria-live="polite"></div>
+        <h1>Wasim<span>Stark</span></h1>
+        <p class="tag">Engineer. Developer. Innovator.</p>
+        <p class="real">Mohammed Wasimullah Siddique, Python full-stack developer</p>
+        <p>
+          Software developer from Visakhapatnam. I turn ideas into working Django APIs, React apps
+          and AI features. 2025 ECE graduate, Andhra University.
+        </p>
+        <div class="btns">
+          <a class="btn solid" href="#projects">See my builds</a
+          ><a class="btn" href="#contact">Contact me</a
+          ><button class="btn" id="pwr" type="button">Power down reactor</button>
+        </div>
+      </div>
+      <div class="reactor" id="reactor" role="img" aria-label="3D arc reactor"></div>
+    </section>
+
+    <!-- Section: about -->
+
+    <section id="about">
+      <h2>About me</h2>
+      <p class="sub">A few lines about who I am.</p>
+      <div class="aboutwrap">
+        <div class="card about">
+          <p>
+            I finished my B.Tech in Electronics and Communication Engineering at Andhra University
+            in 2025, then moved into Python full-stack development. I enjoy the backend side most:
+            Django, REST APIs, caching with Redis and working with databases. I use React for the
+            interfaces.
+          </p>
+          <p>
+            I interned as a Python Full Stack Developer at RoboWaves, and I like adding AI features
+            to my apps with the Claude and Groq APIs. I want to keep growing as a developer in a
+            strong engineering team.
+          </p>
+        </div>
+        <div class="card sketch">
+          <svg viewBox="0 0 200 100" role="img" aria-label="Concept sketch of a flight suit">
+            <use href="#flyer" /></svg
+          ><span>Concept sketch</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: timeline -->
+
+    <section id="timeline">
+      <h2>My timeline</h2>
+      <p class="sub">
+        My education, certifications and experience, newest first. Hover over a card to light it up.
+      </p>
+      <ol class="tl">
+        <li tabindex="0">
+          <span class="when">Jun 2025</span>
+          <h3>Python Full Stack Development</h3>
+          <p class="org">QSpiders</p>
+          <ul>
+            <li>Built full-stack web apps with Python, Django and REST APIs.</li>
+            <li>Made frontend interfaces with HTML, CSS and JavaScript.</li>
+            <li>Worked with SQL databases for CRUD operations and data management.</li>
+          </ul>
+        </li>
+        <li tabindex="0">
+          <span class="when">Internship</span>
+          <h3>Python Full Stack Developer Intern</h3>
+          <p class="org">RoboWaves</p>
+          <ul>
+            <li>
+              Built full-stack web apps with Python and Django, which improved feature delivery.
+            </li>
+            <li>
+              Designed and integrated REST APIs for smooth frontend and backend communication.
+            </li>
+            <li>Debugged and optimized backend logic for better stability and performance.</li>
+            <li>Worked with cross-functional teams on scalable system features.</li>
+          </ul>
+        </li>
+        <li tabindex="0">
+          <span class="when">Oct 2021 to May 2025</span>
+          <h3>B.Tech, Electronics and Communication Engineering</h3>
+          <p class="org">Andhra University</p>
+          <ul>
+            <li>Graduated in 2025 and moved into Python full-stack development.</li>
+            <li>Merit scholarship, top 5% of a 200-student class.</li>
+          </ul>
+        </li>
+        <li tabindex="0">
+          <span class="when">Aug 2024</span>
+          <h3>Embedded C, IoT, AI and Cloud Computing</h3>
+          <p class="org">L&amp;T</p>
+          <ul>
+            <li>Wrote basic embedded programs in C for microcontroller-based systems.</li>
+            <li>Learned IoT architecture, including sensors, devices and communication models.</li>
+            <li>Gained exposure to AI fundamentals and cloud computing concepts.</li>
+          </ul>
+        </li>
+        <li tabindex="0">
+          <span class="when">Jul 2023</span>
+          <h3>Telecom Certification</h3>
+          <p class="org">BSNL</p>
+          <ul>
+            <li>
+              Studied telecom network architecture, including switching and transmission systems.
+            </li>
+            <li>Learned communication protocols and signal processing basics.</li>
+            <li>Explored real-world telecom infrastructure and network operations.</li>
+          </ul>
+        </li>
+        <li tabindex="0">
+          <span class="when">Jun 2019 to Apr 2021</span>
+          <h3>Intermediate (MPC)</h3>
+          <p class="org">Sri Chaitanya College</p>
+        </li>
+        <li tabindex="0">
+          <span class="when">Jan 2018 to Jan 2019</span>
+          <h3>Secondary School Education</h3>
+          <p class="org">Sri Chaitanya School</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- Section: systems -->
+
+    <section id="systems">
+      <h2>What I work with</h2>
+      <p class="sub">The tools I reach for most when I build things.</p>
+      <div class="grid">
+        <div class="bars" id="bars">
+          <div class="bar">Python and Django</div>
+          <div class="bar">Django REST Framework</div>
+          <div class="bar">React</div>
+          <div class="bar">PostgreSQL, MySQL, Redis</div>
+          <div class="bar">AI APIs (Claude, Groq, LLaMA3)</div>
+        </div>
+        <div class="card">
+          <h3>Credentials</h3>
+          <p>
+            Merit scholarship, top 5% of my cohort. Embedded C certification. BSNL Telecom
+            certification.
+          </p>
+          <div class="tags"><i>Embedded C</i><i>Telecom</i><i>ECE</i></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: projects -->
+
+    <section id="projects" class="proj">
+      <h2>Projects</h2>
+      <p class="sub">Things I built while learning, with the stack I used for each.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>Mark I // GitHub Searcher</h3>
+          <p>
+            Search GitHub users and repos through my own API, with Redis caching to cut repeat
+            calls.
+          </p>
+          <div class="tags"><i>Django REST</i><i>Redis</i><i>React</i></div>
+          <details>
+            <summary>Case study</summary>
+            <dl>
+              <dt>Problem</dt>
+              <dd>Calling the GitHub API on every search is slow and repeats the same requests.</dd>
+              <dt>Built</dt>
+              <dd>
+                A Django REST backend that calls the GitHub API, returns clean JSON and validates
+                input, with a React front end.
+              </dd>
+              <dt>Result</dt>
+              <dd>
+                Redis caching with a 2-hour TTL cuts repeated API calls and speeds up responses.
+              </dd>
+            </dl>
+            <a class="cs" href="https://github.com/wasim3003">View code on GitHub</a>
+          </details>
+        </div>
+        <div class="card">
+          <h3>Mark II // Jarvis Voice Assistant</h3>
+          <p>A Python assistant that listens to voice commands and responds.</p>
+          <div class="tags"><i>Python</i><i>Speech recognition</i></div>
+          <details>
+            <summary>Case study</summary>
+            <dl>
+              <dt>Problem</dt>
+              <dd>Small tasks like playing media or opening apps take manual steps.</dd>
+              <dt>Built</dt>
+              <dd>
+                A Python assistant using speech recognition and text-to-speech, with command parsing
+                for automation.
+              </dd>
+              <dt>Result</dt>
+              <dd>Voice commands can play media and run basic system tasks.</dd>
+            </dl>
+            <a class="cs" href="https://github.com/wasim3003">View code on GitHub</a>
+          </details>
+        </div>
+        <div class="card">
+          <h3>Mark III // PrepMind AI</h3>
+          <p>Exam prep with practice MCQs, a teach-me mode, doubt solving and progress tracking.</p>
+          <div class="tags"><i>HTML</i><i>Claude API</i></div>
+          <details>
+            <summary>Case study</summary>
+            <dl>
+              <dt>Problem</dt>
+              <dd>
+                Exam prep tools rarely combine practice, explanations and progress in one place.
+              </dd>
+              <dt>Built</dt>
+              <dd>
+                An exam prep app with practice MCQs, a teach-me mode, doubt solving and progress
+                tracking, powered by the Claude API.
+              </dd>
+              <dt>Result</dt>
+              <dd>One place to practise, learn and track progress.</dd>
+            </dl>
+            <a class="cs" href="https://github.com/wasim3003">View code on GitHub</a>
+          </details>
+        </div>
+        <div class="card">
+          <h3>Mark IV // ANTIGRAVITY</h3>
+          <p>Fitness tracker with an AI coach, a BMR calculator and an orbit-style interface.</p>
+          <div class="tags"><i>React</i><i>Anthropic API</i></div>
+          <details>
+            <summary>Case study</summary>
+            <dl>
+              <dt>Problem</dt>
+              <dd>Fitness trackers often feel like spreadsheets.</dd>
+              <dt>Built</dt>
+              <dd>
+                A fitness tracker with an AI coach, a BMR calculator and an orbit-style interface,
+                using React and the Anthropic API.
+              </dd>
+              <dt>Result</dt>
+              <dd>Tracking and coaching in one playful interface.</dd>
+            </dl>
+            <a class="cs" href="https://github.com/wasim3003">View code on GitHub</a>
+          </details>
+        </div>
+        <div class="card">
+          <h3>Mark V // AI Chatbot</h3>
+          <p>Chat app with a Django backend running LLaMA3-70B on Groq&rsquo;s free tier.</p>
+          <div class="tags"><i>Django REST</i><i>React</i><i>Groq</i></div>
+          <details>
+            <summary>Case study</summary>
+            <dl>
+              <dt>Problem</dt>
+              <dd>Running a large-model chatbot normally means paying for model hosting.</dd>
+              <dt>Built</dt>
+              <dd>
+                A Django REST backend and React front end that call LLaMA3-70B through the Groq free
+                tier.
+              </dd>
+              <dt>Result</dt>
+              <dd>A working chatbot built on the free tier.</dd>
+            </dl>
+            <a class="cs" href="https://github.com/wasim3003">View code on GitHub</a>
+          </details>
+        </div>
+        <div class="card">
+          <h3>Mark VI // Country Information Platform</h3>
+          <p>Explore countries on an interactive 3D globe.</p>
+          <div class="tags"><i>Django</i><i>Three.js</i></div>
+          <details>
+            <summary>Case study</summary>
+            <dl>
+              <dt>Problem</dt>
+              <dd>Country data is scattered and hard to explore.</dd>
+              <dt>Built</dt>
+              <dd>
+                A Django app that uses external APIs to show real-time country data with search and
+                filtering, plus a 3D globe.
+              </dd>
+              <dt>Result</dt>
+              <dd>Faster, more responsive browsing through optimized API calls.</dd>
+            </dl>
+            <a class="cs" href="https://github.com/wasim3003">View code on GitHub</a>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: github -->
+
+    <section id="github">
+      <h2>GitHub feed</h2>
+      <p class="sub">
+        My latest code, pulled live from github.com/wasim3003 when this site runs on my own server.
+      </p>
+      <div class="grid" id="gh">
+        <div class="card">
+          <h3>Feed offline in this preview</h3>
+          <p>
+            The live numbers appear once the site is hosted with Django. Until then you can see
+            everything on GitHub.
+          </p>
+          <a class="cs" href="https://github.com/wasim3003">github.com/wasim3003</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: notes -->
+
+    <section id="notes">
+      <h2>Lab notes</h2>
+      <p class="sub">Short write-ups of what I learned while building.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>Note 01: Why Redis sits in front of the GitHub API</h3>
+          <p>
+            GitHub Searcher called the GitHub API for every search, so repeat searches wasted time.
+            I added Redis with a 2-hour TTL so repeat searches skip the network. Pick a cache
+            lifetime from how often the data really changes.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Note 02: A chatbot on Groq&rsquo;s free tier</h3>
+          <p>
+            My chatbot uses a Django REST backend that calls LLaMA3-70B on Groq. Keeping the API key
+            on the server and validating input in the view kept the setup simple and safe.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Note 03: Building this portfolio</h3>
+          <p>
+            A Three.js arc reactor, a Django view that emails contact messages, a small game and an
+            assistant that answers from my resume. Each piece was a chance to practise something
+            new.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: game -->
+
+    <section id="game">
+      <h2>Repulsor range</h2>
+      <p class="sub">
+        Tap or click the drones before they escape. You have 30 seconds. A miss costs 5 points, and
+        the small drones are worth double.
+      </p>
+      <div class="gbar">
+        <span>Score <b id="gscore">0</b></span
+        ><span>Time <b id="gtime">30</b></span
+        ><span>Best <b id="gbest">0</b></span
+        ><button class="btn solid" id="gs" type="button">Start</button>
+      </div>
+      <canvas id="gc" width="960" height="480" role="img" aria-label="Repulsor range game"></canvas>
+    </section>
+
+    <!-- Section: contact -->
+
+    <section id="contact">
+      <h2>Get in touch</h2>
+      <p class="sub">
+        Hiring, or have a project in mind? Email me and I will reply as soon as I can.
+      </p>
+      <div class="links">
+        <a class="btn solid" href="mailto:wasimroy272@gmail.com">wasimroy272@gmail.com</a>
+        <a class="btn" href="https://github.com/wasim3003">GitHub</a>
+        <a class="btn" href="https://www.linkedin.com/in/wasimullah-siddique-048ab7255">LinkedIn</a>
+      </div>
+      <div class="cwrap">
+        <form class="card form" id="cf" novalidate>
+          <h3>Send me a message</h3>
+          <label>Your name<input name="name" required maxlength="80" autocomplete="name" /></label>
+          <label
+            >Phone number<input
+              name="phone"
+              type="tel"
+              required
+              maxlength="20"
+              autocomplete="tel"
+              inputmode="tel"
+          /></label>
+          <label
+            >Purpose of contact<textarea
+              name="purpose"
+              required
+              maxlength="2000"
+              placeholder="Job offer, freelance project, a question..."
+            ></textarea>
+          </label>
+          <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <button class="btn solid" type="submit">Send message</button>
+          <p id="fs" aria-live="polite"></p>
+        </form>
+        <svg class="radar" viewBox="0 0 200 200" aria-hidden="true">
+          <g fill="none" stroke="#6be6ff" stroke-opacity=".5">
+            <circle cx="100" cy="100" r="96" />
+            <circle cx="100" cy="100" r="64" />
+            <circle cx="100" cy="100" r="32" />
+            <path d="M100 4v192M4 100h192" />
+          </g>
+          <g class="sweep">
+            <path d="M100 100L100 4A96 96 0 0 1 150 17Z" fill="#6be6ff" fill-opacity=".25" />
+            <path d="M100 100V4" stroke="#6be6ff" stroke-width="2" />
+          </g>
+          <circle class="blip" cx="140" cy="70" r="4" fill="#f0b73a" />
+          <circle class="blip" cx="62" cy="128" r="4" fill="#e0343a" style="animation-delay: 1s" />
+        </svg>
+      </div>
+    </section>
+    <footer>Made by Wasim</footer>
+
+    <!-- Scripts: each block does one job, see the comment at the top of each -->
+    <script>
+      /* Small helpers shared by other scripts. */
+
+      // Turns a base64 string into raw bytes (used by the claude.ai preview build).
+      function base64ToBytes(base64) {
+        var binary = atob(base64);
+        var bytes = new Uint8Array(binary.length);
+        for (var i = 0; i < binary.length; i++) {
+          bytes[i] = binary.charCodeAt(i);
+        }
+        return bytes;
+      }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+      /* 3D arc reactor in the hero (Three.js). Follows the mouse, pulses, and dims when the body has the "off" class. */
+      (function () {
+        var box = document.getElementById("reactor");
+        if (!window.THREE) return;
+        var r;
+        try {
+          r = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        } catch (e) {
+          return;
+        }
+        r.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+        r.outputEncoding = THREE.sRGBEncoding;
+        box.appendChild(r.domElement);
+        var s = new THREE.Scene(),
+          c = new THREE.PerspectiveCamera(36, 1, 0.1, 100);
+        c.position.set(0, 0, 13);
+        var rig = new THREE.Group();
+        s.add(rig);
+        function M(o) {
+          return new THREE.MeshStandardMaterial(o);
+        }
+        var plate = new THREE.Mesh(
+          new THREE.CylinderGeometry(3.05, 3.05, 0.3, 64),
+          M({ color: 0x20242b, metalness: 0.9, roughness: 0.45 }),
+        );
+        plate.rotation.x = Math.PI / 2;
+        plate.position.z = -0.3;
+        rig.add(plate);
+        rig.add(
+          new THREE.Mesh(
+            new THREE.TorusGeometry(2.85, 0.3, 24, 96),
+            M({ color: 0x5a616e, metalness: 0.9, roughness: 0.3 }),
+          ),
+        );
+        for (var i = 0; i < 12; i++) {
+          var a = (i / 12) * Math.PI * 2,
+            bolt = new THREE.Mesh(
+              new THREE.CylinderGeometry(0.11, 0.11, 0.2, 12),
+              M({ color: 0xaab2c0, metalness: 1, roughness: 0.25 }),
+            );
+          bolt.rotation.x = Math.PI / 2;
+          bolt.position.set(Math.cos(a) * 2.85, Math.sin(a) * 2.85, 0.3);
+          rig.add(bolt);
+        }
+        var cv = document.createElement("canvas");
+        cv.width = cv.height = 16;
+        var cx = cv.getContext("2d");
+        cx.fillStyle = "#6e3711";
+        cx.fillRect(0, 0, 16, 16);
+        cx.fillStyle = "#e0974d";
+        cx.fillRect(0, 0, 9, 16);
+        var tx = new THREE.CanvasTexture(cv);
+        tx.wrapS = tx.wrapT = THREE.RepeatWrapping;
+        tx.repeat.set(72, 1);
+        rig.add(
+          new THREE.Mesh(
+            new THREE.TorusGeometry(2.2, 0.3, 24, 144),
+            M({ map: tx, metalness: 0.6, roughness: 0.45 }),
+          ),
+        );
+        var base = new THREE.Mesh(
+          new THREE.RingGeometry(0.85, 1.95, 64),
+          M({
+            color: 0x07141a,
+            metalness: 0.4,
+            roughness: 0.7,
+            side: THREE.DoubleSide,
+          }),
+        );
+        base.position.z = -0.08;
+        rig.add(base);
+        var seg = new THREE.Group(),
+          segs = [];
+        rig.add(seg);
+        for (var i = 0; i < 10; i++) {
+          var a0 = (i / 10) * Math.PI * 2 + 0.07,
+            a1 = ((i + 1) / 10) * Math.PI * 2 - 0.07,
+            sh = new THREE.Shape();
+          sh.moveTo(1.05 * Math.cos(a0), 1.05 * Math.sin(a0));
+          sh.lineTo(1.9 * Math.cos(a0 + 0.04), 1.9 * Math.sin(a0 + 0.04));
+          sh.lineTo(1.9 * Math.cos(a1 - 0.04), 1.9 * Math.sin(a1 - 0.04));
+          sh.lineTo(1.05 * Math.cos(a1), 1.05 * Math.sin(a1));
+          sh.closePath();
+          var m = new THREE.Mesh(
+            new THREE.ExtrudeGeometry(sh, { depth: 0.3, bevelEnabled: false }),
+            M({
+              color: 0xd8fbff,
+              emissive: 0x6be6ff,
+              emissiveIntensity: 1.3,
+              metalness: 0.1,
+              roughness: 0.4,
+            }),
+          );
+          m.position.z = -0.05;
+          seg.add(m);
+          segs.push(m);
+        }
+        var ringC = new THREE.Mesh(
+          new THREE.TorusGeometry(0.78, 0.1, 16, 64),
+          M({
+            color: 0xffffff,
+            emissive: 0xcffaff,
+            emissiveIntensity: 2,
+            roughness: 0.3,
+          }),
+        );
+        rig.add(ringC);
+        var tri = new THREE.Mesh(
+          new THREE.CircleGeometry(0.62, 3),
+          new THREE.MeshBasicMaterial({ color: 0xffffff }),
+        );
+        tri.position.z = 0.05;
+        tri.rotation.z = Math.PI / 2;
+        rig.add(tri);
+        var gc = document.createElement("canvas");
+        gc.width = gc.height = 128;
+        var gx = gc.getContext("2d"),
+          gr = gx.createRadialGradient(64, 64, 0, 64, 64, 64);
+        gr.addColorStop(0, "rgba(190,250,255,1)");
+        gr.addColorStop(0.25, "rgba(107,230,255,.55)");
+        gr.addColorStop(1, "rgba(107,230,255,0)");
+        gx.fillStyle = gr;
+        gx.fillRect(0, 0, 128, 128);
+        var gt = new THREE.CanvasTexture(gc);
+        function spr(sc, z) {
+          var p = new THREE.Sprite(
+            new THREE.SpriteMaterial({
+              map: gt,
+              blending: THREE.AdditiveBlending,
+              transparent: true,
+              depthWrite: false,
+            }),
+          );
+          p.scale.set(sc, sc, 1);
+          p.position.z = z;
+          rig.add(p);
+          return p;
+        }
+        var gl1 = spr(7.5, 0.9),
+          gl2 = spr(3.2, 0.5);
+        var L = new THREE.PointLight(0x6be6ff, 1.8, 12);
+        L.position.set(0, 0, 1.8);
+        s.add(L);
+        s.add(new THREE.AmbientLight(0xffffff, 0.35));
+        var D = new THREE.DirectionalLight(0xffffff, 0.8);
+        D.position.set(-4, 5, 7);
+        s.add(D);
+        var mx = 0,
+          my = 0,
+          pw = 1,
+          t = 0,
+          rm = matchMedia("(prefers-reduced-motion:reduce)").matches;
+        addEventListener("pointermove", function (e) {
+          mx = e.clientX / innerWidth - 0.5;
+          my = e.clientY / innerHeight - 0.5;
+        });
+        function sz() {
+          var w = Math.min(box.clientWidth || 340, 1000);
+          r.setSize(w, w, false);
+        }
+        sz();
+        addEventListener("resize", sz);
+        (function f() {
+          requestAnimationFrame(f);
+          t += 0.016;
+          var on = document.body.classList.contains("off") ? 0 : 1;
+          pw += (on - pw) * 0.06;
+          var pulse = rm ? 1 : 0.92 + 0.08 * Math.sin(t * 2.2);
+          segs.forEach(function (q) {
+            q.material.emissiveIntensity = 0.08 + 1.3 * pw * pulse;
+          });
+          ringC.material.emissiveIntensity = 0.1 + 2 * pw;
+          tri.material.color.setScalar(0.25 + 0.75 * pw);
+          gl1.material.opacity = 0.75 * pw * pulse;
+          gl2.material.opacity = 0.9 * pw;
+          L.intensity = 1.8 * pw + 0.1;
+          if (!rm) seg.rotation.z -= 0.0025 * pw;
+          rig.rotation.y +=
+            (mx * 0.8 + (rm ? 0 : Math.sin(t * 0.5) * 0.12) - rig.rotation.y) * 0.05;
+          rig.rotation.x += (my * 0.6 - 0.15 - rig.rotation.x) * 0.05;
+          if (!document.body.classList.contains("rec")) r.render(s, c);
+        })();
+      })();
+    </script>
+    <script>
+      /* Contact form: sends name, phone and purpose to /contact/ (the Django view emails you). */
+      (function () {
+        var f = document.getElementById("cf"),
+          st = document.getElementById("fs"),
+          E = f.elements;
+        f.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var d = {
+            name: E.name.value.trim(),
+            phone: E.phone.value.trim(),
+            purpose: E.purpose.value.trim(),
+            website: E.website.value,
+          };
+          if (!d.name || !d.phone || !d.purpose) {
+            st.textContent = "Please fill in your name, number and purpose.";
+            return;
+          }
+          st.textContent = "Sending...";
+          fetch("contact/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(d),
+          })
+            .then(function (r) {
+              return r.json();
+            })
+            .then(function (j) {
+              if (!j.ok) throw 0;
+              st.textContent = "Sent. I will get back to you soon.";
+              f.reset();
+            })
+            .catch(function () {
+              st.textContent =
+                "Sorry, your message could not be sent right now. You can email me at wasimroy272@gmail.com instead.";
+            });
+        });
+      })();
+    </script>
+    <script>
+      /*
+  Intro: the boot-up text under the hero, and the reactor power button.
+  Click the reactor or the "Power down reactor" button to switch the glow off and on.
+*/
+      (function () {
+        var lines = [
+          "Initializing J.A.R.V.I.S.",
+          "Arc reactor online",
+          "Identity confirmed: Wasim Stark",
+        ];
+        var statusEl = document.getElementById("status");
+        var reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        // Types each line one letter at a time, then moves to the next line.
+        function typeLines() {
+          var lineIndex = 0;
+          var charCount = 0;
+          (function step() {
+            if (lineIndex >= lines.length) return;
+            var text = lines[lineIndex];
+            charCount += 1;
+            statusEl.textContent = text.slice(0, charCount);
+            if (charCount < text.length) {
+              setTimeout(step, 45);
+            } else {
+              lineIndex += 1;
+              charCount = 0;
+              setTimeout(step, 500);
+            }
+          })();
+        }
+
+        if (reduceMotion) {
+          statusEl.textContent = lines[lines.length - 1];
+        } else {
+          typeLines();
+        }
+
+        // Power button: the "off" class on <body> is read by reactor.js.
+        var powerButton = document.getElementById("pwr");
+        function togglePower() {
+          var isOff = document.body.classList.toggle("off");
+          powerButton.textContent = isOff ? "Power up reactor" : "Power down reactor";
+        }
+        powerButton.addEventListener("click", togglePower);
+        document.getElementById("reactor").addEventListener("click", togglePower);
+      })();
+    </script>
+    <script>
+      /*
+  Music button: plays theme.mp3 in a loop.
+  Uses the Web Audio API, and only starts after a click (browsers require this).
+  To change the track, replace theme.mp3 with your own file.
+*/
+      (function () {
+        var button = document.getElementById("mus");
+        var label = button.querySelector("span");
+        var audioContext;
+        var currentSource;
+        var trackBuffer = null;
+        var isPlaying = false;
+
+        function setButton(on) {
+          button.setAttribute("aria-pressed", on);
+          button.classList.toggle("on", on);
+          label.textContent = on ? "Music: on" : "Music: off";
+        }
+
+        function getContext() {
+          if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          }
+          return audioContext;
+        }
+
+        // Loads and decodes the track once. The claude.ai preview has the file
+        // embedded in window.__ASSETS; your own site fetches it from .
+        function loadTrack() {
+          if (trackBuffer) return Promise.resolve(trackBuffer);
+          var data = window.__ASSETS
+            ? Promise.resolve(base64ToBytes(window.__ASSETS.mp3).buffer)
+            : fetch("theme.mp3").then(function (response) {
+                return response.arrayBuffer();
+              });
+          return data.then(function (arrayBuffer) {
+            return new Promise(function (resolve, reject) {
+              getContext().decodeAudioData(
+                arrayBuffer,
+                function (decoded) {
+                  trackBuffer = decoded;
+                  resolve(decoded);
+                },
+                reject,
+              );
+            });
+          });
+        }
+
+        function start() {
+          isPlaying = true;
+          setButton(true);
+          getContext().resume();
+          loadTrack()
+            .then(function (decoded) {
+              if (!isPlaying) return; // clicked off while loading
+              currentSource = audioContext.createBufferSource();
+              currentSource.buffer = decoded;
+              currentSource.loop = true;
+              var volume = audioContext.createGain();
+              volume.gain.value = 0.7;
+              currentSource.connect(volume);
+              volume.connect(audioContext.destination);
+              currentSource.start();
+            })
+            .catch(function () {
+              isPlaying = false;
+              setButton(false);
+            });
+        }
+
+        function stop() {
+          isPlaying = false;
+          if (currentSource) {
+            try {
+              currentSource.stop();
+            } catch (error) {}
+            currentSource = null;
+          }
+          setButton(false);
+        }
+
+        button.addEventListener("click", function () {
+          if (isPlaying) stop();
+          else start();
+        });
+      })();
+    </script>
+    <script>
+      /*
+  Resume button.
+  On your own site this is a normal download link to resume.pdf, so nothing happens here.
+  Inside the claude.ai preview, links cannot download, so the embedded PDF is saved
+  through the preview's "downloads" feature. If that fails, the button says why.
+*/
+      (function () {
+        var link = document.getElementById("rs");
+        var label = link.querySelector("span");
+        var originalHtml = label.innerHTML;
+
+        function flash(message) {
+          label.textContent = message;
+          setTimeout(function () {
+            label.innerHTML = originalHtml;
+          }, 3000);
+        }
+
+        link.addEventListener("click", function (event) {
+          var assets = window.__ASSETS;
+          if (!assets || !window.claude || !claude.use) return;
+          event.preventDefault();
+          claude
+            .use("downloads")
+            .then(function (downloads) {
+              if (!downloads) {
+                flash("Not available here");
+                return;
+              }
+              return downloads
+                .save({
+                  filename: "Wasimullah_Siddique_Resume.pdf",
+                  data: new Blob([base64ToBytes(assets.pdf)], { type: "application/pdf" }),
+                })
+                .catch(function (error) {
+                  if (error && error.code === "declined") return;
+                  flash("Download failed");
+                });
+            })
+            .catch(function () {
+              flash("Download failed");
+            });
+        });
+      })();
+    </script>
+    <script>
+      /* "Repulsor range" mini-game: click or tap the drones for 30 seconds. Best score is saved in the browser. */
+      (function () {
+        var cv = document.getElementById("gc"),
+          x = cv.getContext("2d"),
+          W = 960,
+          H = 480,
+          btn = document.getElementById("gs"),
+          sc = document.getElementById("gscore"),
+          tm = document.getElementById("gtime"),
+          bs = document.getElementById("gbest");
+        var run = false,
+          T = [],
+          P = [],
+          score = 0,
+          left = 30,
+          last = 0,
+          spawn = 0,
+          best = 0;
+        try {
+          best = +localStorage.getItem("irbest") || 0;
+        } catch (e) {}
+        bs.textContent = best;
+        function start() {
+          T = [];
+          P = [];
+          score = 0;
+          left = 30;
+          spawn = 0;
+          run = true;
+          sc.textContent = 0;
+          btn.textContent = "Restart";
+          last = performance.now();
+          requestAnimationFrame(loop);
+        }
+        function pos(e) {
+          var r = cv.getBoundingClientRect();
+          return [((e.clientX - r.left) * W) / r.width, ((e.clientY - r.top) * H) / r.height];
+        }
+        cv.addEventListener("pointerdown", function (e) {
+          if (!run) return;
+          var p = pos(e),
+            hit = false;
+          for (var i = T.length - 1; i >= 0; i--) {
+            var t = T[i],
+              dx = p[0] - t.x,
+              dy = p[1] - t.y;
+            if (dx * dx + dy * dy < t.r * t.r) {
+              score += t.r < 26 ? 20 : 10;
+              for (var k = 0; k < 12; k++)
+                P.push({
+                  x: t.x,
+                  y: t.y,
+                  vx: (Math.random() - 0.5) * 6,
+                  vy: (Math.random() - 0.5) * 6,
+                  l: 1,
+                });
+              T.splice(i, 1);
+              hit = true;
+              break;
+            }
+          }
+          if (!hit) score = Math.max(0, score - 5);
+          P.push({ x: p[0], y: p[1], ring: 1, l: 1 });
+          sc.textContent = score;
+        });
+        function loop(n) {
+          if (!run) return;
+          var dt = Math.min((n - last) / 1000, 0.05);
+          last = n;
+          left -= dt;
+          spawn -= dt;
+          if (spawn <= 0) {
+            spawn = 0.55;
+            var r = 18 + Math.random() * 22;
+            T.push({
+              x: r + Math.random() * (W - 2 * r),
+              y: H + r,
+              r: r,
+              vy: -(80 + Math.random() * 110),
+              vx: (Math.random() - 0.5) * 90,
+            });
+          }
+          T.forEach(function (t) {
+            t.x += t.vx * dt;
+            t.y += t.vy * dt;
+            if (t.x < t.r || t.x > W - t.r) t.vx *= -1;
+          });
+          T = T.filter(function (t) {
+            return t.y > -t.r;
+          });
+          P.forEach(function (p) {
+            p.l -= dt * 2;
+            if (!p.ring) {
+              p.x += p.vx;
+              p.y += p.vy;
+            }
+          });
+          P = P.filter(function (p) {
+            return p.l > 0;
+          });
+          tm.textContent = Math.max(0, Math.ceil(left));
+          if (left <= 0) {
+            run = false;
+            if (score > best) {
+              best = score;
+              bs.textContent = best;
+              try {
+                localStorage.setItem("irbest", best);
+              } catch (e) {}
+            }
+            draw(true);
+            return;
+          }
+          draw();
+          requestAnimationFrame(loop);
+        }
+        function draw(over) {
+          x.clearRect(0, 0, W, H);
+          x.fillStyle = "#0b0e13";
+          x.fillRect(0, 0, W, H);
+          x.strokeStyle = "rgba(107,230,255,.08)";
+          x.lineWidth = 1;
+          for (var i = 0; i < W; i += 40) {
+            x.beginPath();
+            x.moveTo(i, 0);
+            x.lineTo(i, H);
+            x.stroke();
+          }
+          for (i = 0; i < H; i += 40) {
+            x.beginPath();
+            x.moveTo(0, i);
+            x.lineTo(W, i);
+            x.stroke();
+          }
+          T.forEach(function (t) {
+            x.beginPath();
+            x.arc(t.x, t.y, t.r, 0, 7);
+            x.fillStyle = "#c4282d";
+            x.fill();
+            x.lineWidth = 3;
+            x.strokeStyle = "#f0b73a";
+            x.stroke();
+            x.beginPath();
+            x.arc(t.x, t.y, t.r * 0.35, 0, 7);
+            x.fillStyle = "#6be6ff";
+            x.fill();
+          });
+          P.forEach(function (p) {
+            x.globalAlpha = Math.max(p.l, 0);
+            if (p.ring) {
+              x.beginPath();
+              x.arc(p.x, p.y, (1 - p.l) * 30 + 4, 0, 7);
+              x.strokeStyle = "#6be6ff";
+              x.lineWidth = 2;
+              x.stroke();
+            } else {
+              x.fillStyle = "#f0b73a";
+              x.fillRect(p.x, p.y, 4, 4);
+            }
+            x.globalAlpha = 1;
+          });
+          if (!run) {
+            x.fillStyle = "rgba(11,14,19,.72)";
+            x.fillRect(0, 0, W, H);
+            x.fillStyle = "#e8eaee";
+            x.textAlign = "center";
+            x.font = "700 32px Chakra Petch,sans-serif";
+            x.fillText(over ? "Time up. Score: " + score : "Press Start to begin", W / 2, H / 2);
+          }
+        }
+        btn.addEventListener("click", start);
+        draw();
+      })();
+    </script>
+    <script>
+      /* Recruiter view button: hides the effects and shows a calm page. The choice is remembered. */
+      (function () {
+        var b = document.body,
+          btn = document.getElementById("rec"),
+          lab = btn.querySelector("span");
+        function set(v) {
+          b.classList.toggle("rec", v);
+          btn.setAttribute("aria-pressed", v);
+          btn.classList.toggle("on", v);
+          lab.textContent = v ? "Showtime view" : "Recruiter view";
+          try {
+            localStorage.setItem("irrec", v ? "1" : "0");
+          } catch (e) {}
+        }
+        btn.addEventListener("click", function () {
+          set(!b.classList.contains("rec"));
+        });
+        try {
+          if (localStorage.getItem("irrec") === "1") set(true);
+        } catch (e) {}
+      })();
+    </script>
+    <script>
+      /* Scroll effects: the power bar at the top and the sections sliding in as "ONLINE". */
+      (function () {
+        document.documentElement.classList.add("js");
+        var secs = document.querySelectorAll("section:not(.hero)");
+        secs.forEach(function (x) {
+          x.classList.add("rv");
+        });
+        if ("IntersectionObserver" in window) {
+          var o = new IntersectionObserver(
+            function (e) {
+              e.forEach(function (y) {
+                if (y.isIntersecting) {
+                  y.target.classList.add("on");
+                  o.unobserve(y.target);
+                }
+              });
+            },
+            { threshold: 0.12 },
+          );
+          secs.forEach(function (x) {
+            o.observe(x);
+          });
+        } else {
+          secs.forEach(function (x) {
+            x.classList.add("on");
+          });
+        }
+        var bar = document.querySelector("#pwrbar i"),
+          pct = document.getElementById("pct");
+        function sc() {
+          var h = document.documentElement.scrollHeight - innerHeight,
+            p = h > 0 ? Math.min(100, Math.round((scrollY / h) * 100)) : 0;
+          bar.style.width = p + "%";
+          pct.textContent = "SUIT POWER " + p + "%";
+        }
+        addEventListener("scroll", sc, { passive: true });
+        sc();
+      })();
+    </script>
+    <script>
+      /* GitHub feed: fills the GitHub section from /github/ (the Django view). Keeps the fallback card if the request fails. */
+      (function () {
+        var g = document.getElementById("gh");
+        fetch("github/")
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (j) {
+            if (!j.ok) throw 0;
+            g.textContent = "";
+            function card(t, p, u) {
+              var d = document.createElement("div");
+              d.className = "card";
+              var h = document.createElement("h3");
+              h.textContent = t;
+              var q = document.createElement("p");
+              q.textContent = p;
+              d.appendChild(h);
+              d.appendChild(q);
+              var a = document.createElement("a");
+              a.className = "cs";
+              a.href = u;
+              a.textContent = "Open on GitHub";
+              d.appendChild(a);
+              g.appendChild(d);
+            }
+            card(
+              j.repos + " public repos",
+              j.followers + " followers",
+              "https://github.com/wasim3003",
+            );
+            j.recent.forEach(function (x) {
+              card(x.name, (x.lang || "Code") + ", last push " + x.pushed, x.url);
+            });
+          })
+          .catch(function () {});
+      })();
+    </script>
+    <script>
+      /* JARVIS chat: answers questions about Wasim. Uses /ask/ on your site, or the claude.ai preview feature when previewing. */
+      (function () {
+        var jb = document.getElementById("jb"),
+          jp = document.getElementById("jp"),
+          jm = document.getElementById("jm"),
+          jf = document.getElementById("jf"),
+          ji = document.getElementById("ji"),
+          busy = false,
+          F =
+            "You are JARVIS, the assistant on Wasim's portfolio. Answer only questions about Wasim, in under 80 words, in a friendly tone. If the answer is not in these facts, say you do not know and suggest emailing wasimroy272@gmail.com. Facts: Wasim is Mohammed Wasimullah Siddique, a Python full-stack developer from Visakhapatnam, India. B.Tech in Electronics and Communication Engineering, Andhra University, 2021 to 2025, merit scholarship (top 5% of 200 students). Skills: Python, JavaScript, C basics, Django, Django REST Framework, React, MySQL, PostgreSQL, Redis, Git, GitHub, REST APIs, caching, debugging. Experience: Python Full Stack Developer Intern at RoboWaves. Projects: GitHub Searcher (Django REST, Redis caching with 2 hour TTL, React), Country Information Platform (Django, external APIs, 3D globe), Jarvis Voice Assistant (Python, speech recognition), PrepMind AI (exam prep with the Claude API), ANTIGRAVITY (fitness tracker with AI coach), AI Chatbot (Django, React, LLaMA3 on Groq). Certifications: Python Full Stack (QSpiders), Telecom (BSNL), Embedded C, IoT, AI and Cloud (L&T). Contact: wasimroy272@gmail.com, GitHub wasim3003.";
+        function open(v) {
+          jp.hidden = !v;
+          jb.setAttribute("aria-expanded", v);
+          if (v) ji.focus();
+        }
+        jb.addEventListener("click", function () {
+          open(jp.hidden);
+        });
+        document.getElementById("jx").addEventListener("click", function () {
+          open(false);
+        });
+        function say(t, c) {
+          var p = document.createElement("p");
+          p.className = c;
+          p.textContent = t;
+          jm.appendChild(p);
+          jm.scrollTop = jm.scrollHeight;
+          return p;
+        }
+        jf.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var q = ji.value.trim();
+          if (!q || busy) return;
+          ji.value = "";
+          say(q, "me");
+          busy = true;
+          var out = say("...", "bot");
+          function done(t) {
+            out.textContent = t;
+            busy = false;
+            jm.scrollTop = jm.scrollHeight;
+          }
+          function viaDjango() {
+            return fetch("ask/", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ q: q }),
+            })
+              .then(function (r) {
+                return r.json();
+              })
+              .then(function (j) {
+                if (!j.ok) {
+                  var failure = new Error(j.error || "failed");
+                  failure.fromServer = true;
+                  throw failure;
+                }
+                done(j.text);
+              });
+          }
+          var sp = window.claude && claude.use ? claude.use("sample") : Promise.resolve(null);
+          sp.then(function (sample) {
+            if (!sample) return viaDjango();
+            return sample(F + "\n\nVisitor question: " + q, {
+              onText: function (x) {
+                out.textContent = x.text;
+              },
+            }).then(function (x) {
+              done(x.text);
+            });
+          }).catch(function (error) {
+            done(
+              (error && error.fromServer ? error.message + " " : "JARVIS is offline right now. ") +
+                "You can email Wasim at wasimroy272@gmail.com.",
+            );
+          });
+        });
+      })();
+    </script>
+    <script>
+      /* Jet fight: one flier shoots nine jets in 3.5 seconds, every 12 seconds. Change timing and counts near the top of fight(). */
+      (function () {
+        var bt = document.getElementById("battle");
+        if (!bt || matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+        var NS = "http://www.w3.org/2000/svg",
+          dir = 1;
+        function sv(id, w, h) {
+          var s = document.createElementNS(NS, "svg");
+          s.setAttribute("viewBox", id == "flyer" ? "0 0 200 100" : "0 0 120 50");
+          s.style.cssText = "position:absolute;left:0;top:0;width:" + w + "px;height:" + h + "px";
+          var u = document.createElementNS(NS, "use");
+          u.setAttribute("href", "#" + id);
+          s.appendChild(u);
+          bt.appendChild(s);
+          return s;
+        }
+        function dv(css) {
+          var d = document.createElement("div");
+          d.style.cssText = "position:absolute;left:0;top:0;" + css;
+          bt.appendChild(d);
+          return d;
+        }
+        function fight() {
+          if (document.hidden || document.body.classList.contains("rec")) return;
+          var W = innerWidth,
+            H = innerHeight,
+            mob = W < 760,
+            Tf = 3500,
+            P = [0, 0.3, 0.65, 1],
+            YO = [0, -40, 30, -15];
+          bt.style.transform = dir < 0 ? "scaleX(-1)" : "";
+          dir = -dir;
+          var fw = mob ? 130 : 200,
+            k = fw / 200,
+            yb = H * (mob ? 0.28 : 0.3),
+            ft = -fw - 100,
+            fe = W + 60;
+          function yf(l) {
+            var p = l / Tf;
+            return (
+              k *
+              (p < 0.3
+                ? (-40 * p) / 0.3
+                : p < 0.65
+                  ? -40 + (70 * (p - 0.3)) / 0.35
+                  : 30 - (45 * (p - 0.65)) / 0.35)
+            );
+          }
+          function path(dx, dy) {
+            return P.map(function (p, i) {
+              return {
+                offset: p,
+                transform:
+                  "translate(" + (ft + (fe - ft) * p + dx) + "px," + (yb + YO[i] * k + dy) + "px)",
+              };
+            });
+          }
+          var o = { duration: Tf, easing: "linear", fill: "both" };
+          sv("flyer", fw, fw / 2).animate(path(0, 0), o);
+          var trl = fw * 1.4;
+          dv(
+            "width:" +
+              trl +
+              "px;height:" +
+              (6 * k + 2) +
+              "px;border-radius:6px;background:linear-gradient(90deg,transparent,rgba(107,230,255,.6),rgba(255,190,70,.95));filter:blur(2px)",
+          ).animate(path(10 * k - trl, 52 * k - 3), o);
+          var YJ = [-110, 70, -40, 100, -80, 30, -130, 60, -20],
+            jw = 110 * k * (mob ? 1.15 : 1.1);
+          YJ.forEach(function (yo, i) {
+            var ex = W * (0.3 + 0.075 * i),
+              ey = yb + yo * k,
+              hx = ex - 240 * k,
+              l = (Tf * (hx - 176 * k - ft)) / (fe - ft),
+              hy = yb + yf(l) + 44 * k,
+              dd = Math.min(900, l);
+            var jet = sv("jet", jw, jw * 0.42);
+            jet.animate(
+              [
+                {
+                  transform: "translate(" + (W + 160) + "px," + (ey - jw * 0.2) + "px)",
+                },
+                {
+                  transform: "translate(" + (ex - jw / 2) + "px," + (ey - jw * 0.2) + "px)",
+                },
+              ],
+              { duration: dd, delay: l - dd, easing: "ease-out", fill: "both" },
+            );
+            setTimeout(function () {
+              var dx = ex - hx,
+                dy = ey - hy,
+                L = Math.sqrt(dx * dx + dy * dy);
+              dv(
+                "width:" +
+                  L +
+                  "px;height:4px;border-radius:4px;transform-origin:0 50%;transform:translate(" +
+                  hx +
+                  "px," +
+                  hy +
+                  "px) rotate(" +
+                  Math.atan2(dy, dx) +
+                  "rad);background:linear-gradient(90deg,#fff,#6be6ff);box-shadow:0 0 14px #6be6ff",
+              ).animate([{ opacity: 0 }, { opacity: 1 }, { opacity: 0 }], {
+                duration: 200,
+                fill: "both",
+              });
+              setTimeout(function () {
+                jet.remove();
+                var e = dv(
+                  "width:100px;height:100px;border-radius:50%;margin:-50px 0 0 -50px;background:radial-gradient(circle,#fff 0,#ffb347 35%,rgba(255,80,40,.7) 55%,transparent 70%)",
+                );
+                e.animate(
+                  [
+                    {
+                      transform: "translate(" + ex + "px," + ey + "px) scale(.2)",
+                      opacity: 1,
+                    },
+                    {
+                      transform:
+                        "translate(" + ex + "px," + ey + "px) scale(" + 1.7 * (k + 0.3) + ")",
+                      opacity: 0,
+                    },
+                  ],
+                  { duration: 600, easing: "ease-out", fill: "both" },
+                );
+              }, 140);
+            }, l - 140);
+          });
+          setTimeout(function () {
+            bt.textContent = "";
+          }, 4400);
+        }
+        setTimeout(fight, 2500);
+        setInterval(fight, 12000);
+      })();
+    </script>
+    <script>
+      /* Burger menu for screens 900px wide or less. */
+      (function () {
+        var nav = document.querySelector("nav.top"),
+          b = document.getElementById("burger");
+        function set(v) {
+          nav.classList.toggle("open", v);
+          b.setAttribute("aria-expanded", v);
+          b.setAttribute("aria-label", v ? "Close menu" : "Open menu");
+        }
+        b.addEventListener("click", function () {
+          set(!nav.classList.contains("open"));
+        });
+        nav.querySelectorAll(".mid a,.mname,.brand").forEach(function (a) {
+          a.addEventListener("click", function () {
+            set(false);
+          });
+        });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") set(false);
+        });
+        addEventListener("resize", function () {
+          if (innerWidth > 900) set(false);
+        });
+      })();
+    </script>
+  </body>
+</html>
