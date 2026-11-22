@@ -15,6 +15,7 @@ Environment variables (set them on your host, never in the code)
   OPENROUTER_API_KEY key for JARVIS (OpenRouter), with OPENROUTER_MODEL = the model id
   GROQ_API_KEY       alternative key for JARVIS (Groq), or ANTHROPIC_API_KEY
   GITHUB_TOKEN       optional, avoids GitHub rate limits
+  SHOW_AI_ERRORS     set to 1 while testing: JARVIS then shows why the AI call failed
   SECRET_KEY, DEBUG  Django settings (DEBUG=0 on a live site)
 
 Run locally:  pip install -r requirements.txt
@@ -126,6 +127,45 @@ def env_key(name):
     return os.environ.get(name, "").strip().strip('"').strip("'")
 
 
+_models = {"t": 0, "ids": []}
+
+
+def free_openrouter_models():
+    """Asks OpenRouter which free text models exist right now (cached for an hour),
+    because free model names come and go."""
+    now = time.time()
+    if _models["ids"] and now - _models["t"] < 3600:
+        return _models["ids"]
+    try:
+        req = urllib.request.Request("https://openrouter.ai/api/v1/models", headers={"User-Agent": "portfolio"})
+        with urllib.request.urlopen(req, timeout=10) as r:
+            models = json.loads(r.read())["data"]
+    except Exception:
+        return _models["ids"]
+    ids = []
+    for m in models:
+        price = m.get("pricing") or {}
+        free = str(price.get("prompt")) == "0" and str(price.get("completion")) == "0"
+        text_only = (m.get("architecture") or {}).get("modality") == "text->text"
+        if m["id"].endswith(":free") and free and text_only and (m.get("context_length") or 0) >= 8000:
+            ids.append(m["id"])
+    # Skip reasoning models (they often reply with empty text) and prefer well-known chat models.
+    ids = [i for i in ids if not any(w in i for w in ("thinking", "reasoning", "r1", "think"))]
+    liked = ("llama", "gemma", "qwen", "mistral", "gpt-oss", "deepseek")
+    ids.sort(key=lambda i: (not any(w in i for w in liked), i))
+    _models.update(t=now, ids=ids)
+    return ids
+
+
+def ai_failure(provider, detail):
+    """Logs why the AI call failed. Set SHOW_AI_ERRORS=1 to also show the reason in the chat."""
+    print("ASK ERROR", provider, detail, file=sys.stderr, flush=True)
+    result = {"ok": False, "error": "Could not answer right now."}
+    if os.environ.get("SHOW_AI_ERRORS") == "1":
+        result["detail"] = (provider + ": " + detail)[:200]
+    return JsonResponse(result, status=502)
+
+
 def ai_provider():
     """JARVIS uses the first key that is set: OpenRouter, then Groq, then Anthropic."""
     for provider in ("openrouter", "groq", "anthropic"):
@@ -158,20 +198,18 @@ def ask(request):
             "anthropic-version": "2023-06-01",
             "content-type": "application/json",
         }
-        body = {
-            "model": os.environ.get("ASK_MODEL", "claude-haiku-5-5"),
-            "max_tokens": 1500,
-            "system": FACTS,
-            "messages": [{"role": "user", "content": q}],
-        }
+        body = {"max_tokens": 1500, "system": FACTS, "messages": [{"role": "user", "content": q}]}
+        models = [os.environ.get("ASK_MODEL", "claude-haiku-5-5")]
     else:  # OpenRouter and Groq both use the OpenAI chat format
         if provider == "openrouter":
             url = "https://openrouter.ai/api/v1/chat/completions"
-            model = os.environ.get("OPENROUTER_MODEL", "meta-llama/llama-3.3-70b-instruct:free").strip()
+            chosen = os.environ.get("OPENROUTER_MODEL", "").strip()
+            # Your model first, then up to 3 free ones found live, in case yours is gone.
+            models = ([chosen] if chosen else []) + [m for m in free_openrouter_models() if m != chosen][:3]
             extra = {"HTTP-Referer": request.build_absolute_uri("/"), "X-Title": "Wasim portfolio"}
         else:
             url = "https://api.groq.com/openai/v1/chat/completions"
-            model = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile").strip()
+            models = [os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile").strip()]
             extra = {}
         headers = {
             "Authorization": "Bearer " + env_key(provider.upper() + "_API_KEY"),
@@ -179,35 +217,44 @@ def ask(request):
             "User-Agent": "portfolio",
         }
         headers.update(extra)
-        body = {
-            "model": model,
-            "max_tokens": 400,
-            "messages": [{"role": "system", "content": FACTS}, {"role": "user", "content": q}],
-        }
-    try:
-        req = urllib.request.Request(url, json.dumps(body).encode(), headers)
-        with urllib.request.urlopen(req, timeout=30) as r:
-            data = json.loads(r.read())
-        if provider == "anthropic":
-            text = "".join(b.get("text", "") for b in data.get("content", []) if b.get("type") == "text").strip()
-        else:
-            text = (data["choices"][0]["message"].get("content") or "").strip()
-        if not text:
-            raise ValueError("empty answer")
-    except urllib.error.HTTPError as e:
-        print("ASK ERROR", provider, e.code, e.read()[:400], file=sys.stderr, flush=True)
-        return JsonResponse({"ok": False, "error": "Could not answer right now."}, status=502)
-    except Exception as e:
-        print("ASK ERROR", provider, repr(e), file=sys.stderr, flush=True)
-        return JsonResponse({"ok": False, "error": "Could not answer right now."}, status=502)
-    return JsonResponse({"ok": True, "text": text})
+        body = {"max_tokens": 400, "messages": [{"role": "system", "content": FACTS}, {"role": "user", "content": q}]}
+    if not models:
+        return ai_failure(provider, "no model available (set OPENROUTER_MODEL)")
+    last_error = "unknown"
+    for model in models:
+        body["model"] = model
+        try:
+            req = urllib.request.Request(url, json.dumps(body).encode(), headers)
+            with urllib.request.urlopen(req, timeout=30) as r:
+                data = json.loads(r.read())
+            if provider == "anthropic":
+                text = "".join(b.get("text", "") for b in data.get("content", []) if b.get("type") == "text").strip()
+            else:
+                text = (data["choices"][0]["message"].get("content") or "").strip()
+            if not text:
+                raise ValueError("empty answer")
+            return JsonResponse({"ok": True, "text": text})
+        except urllib.error.HTTPError as e:
+            raw = e.read()[:600].decode("utf-8", "replace")
+            try:
+                message = json.loads(raw)["error"]["message"]
+            except Exception:
+                message = raw
+            last_error = "HTTP %s %s (model %s)" % (e.code, message, model)
+            print("ASK TRY", provider, last_error, file=sys.stderr, flush=True)
+            if e.code in (401, 402, 403):  # key or credits problem: another model will not help
+                break
+        except Exception as e:
+            last_error = "%r (model %s)" % (e, model)
+            print("ASK TRY", provider, last_error, file=sys.stderr, flush=True)
+    return ai_failure(provider, last_error)
 
 
 def health(request):
     """Shows which settings are loaded (true/false only, never the values)."""
     return JsonResponse({
         "jarvis_provider": ai_provider() or "none",
-        "jarvis_model": os.environ.get("OPENROUTER_MODEL", "(default)") if ai_provider() == "openrouter" else "",
+        "jarvis_model": (os.environ.get("OPENROUTER_MODEL") or "(auto: free model)") if ai_provider() == "openrouter" else "",
         "openrouter_key_set": bool(env_key("OPENROUTER_API_KEY")),
         "groq_key_set": bool(env_key("GROQ_API_KEY")),
         "anthropic_key_set": bool(os.environ.get("ANTHROPIC_API_KEY")),
